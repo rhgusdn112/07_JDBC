@@ -19,7 +19,7 @@ import lombok.ToString;
 public class User {
 	private int userNo;
 	private String userId;
-	private String userpw;
+	private String userPw;
 	private String userName;
 	private String enrollDate;
 	// --> enrollDate는 왜 java.sql.Date가 아니라 String인가??
