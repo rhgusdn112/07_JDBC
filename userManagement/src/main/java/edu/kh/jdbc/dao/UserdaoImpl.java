@@ -172,5 +172,119 @@ public class UserdaoImpl implements UserDao {
 		}
 		return userList;
 	}
+
+	@Override
+	public List<User> search(Connection conn, String userNo) throws Exception {
+
+		// ArrayList 객체를 미리 생성하는 이유
+		// == 조회된 결과를 추가(add) 해서 묶어 반환하기 위해 생성
+		List<User> userList = new ArrayList<User>();
+		
+		try {
+			String sql = prop.getProperty("selectUser");
+		
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userNo); 
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				int no = rs.getInt("USER_NO");
+				String id = rs.getString("USER_ID");
+				String pw = rs.getString("USER_PW");
+				String userName = rs.getString("USER_NAME");
+				String enrollDate = rs.getString("ENROLL_DATE");
+			
+				User user = new User(no, id, pw, userName, enrollDate);
+				
+				userList.add(user);
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return userList;
+	}
+
+	@Override
+	public User selectUser(Connection conn, String userNo) throws Exception {
+
+	    User user = null;
+
+	    try {
+	        String sql = prop.getProperty("selectUser");  // SQL 쿼리 가져오기
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, userNo);  // ?에 userNo 값 설정
+	        
+	        rs = pstmt.executeQuery();  // 쿼리 실행
+	        
+	        if (rs.next()) {
+	            int no = rs.getInt("USER_NO");
+	            String id = rs.getString("USER_ID");
+	            String pw = rs.getString("USER_PW");
+	            String userName = rs.getString("USER_NAME");
+	            String enrollDate = rs.getString("ENROLL_DATE");
+	            
+	            user = new User(no, id, pw, userName, enrollDate);
+	        }
+
+	    } finally {
+	        close(rs);
+	        close(pstmt);
+	    }
+	    return user;
+	}
+
+	@Override
+	public int deleteUser(Connection conn, int userNo) throws Exception {
+			
+		// 결과를 저장용 변수
+		int result = 0; // 결과 행 개수 저장
+		
+		try {
+			String sql = prop.getProperty("deleteUser");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, userNo);
+			
+			// DML은 executeUpdate() 호출
+			result = pstmt.executeUpdate();
+			
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	@Override
+	public int updateUser(Connection conn, User user) throws Exception {
+		
+		int result = 0;
+		
+		try {
+			String sql = prop.getProperty("updateUser");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, user.getUserPw());
+			pstmt.setString(2, user.getUserName());
+			pstmt.setInt(3, user.getUserNo());
+			
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+
+
 	
 }
