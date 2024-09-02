@@ -34,7 +34,7 @@ public class JDBCExample1 {
 		// - 1) SQL을 DB에 전달
 		// - 2) DB에서 SQL 수행 결과를 반환 받아옴
 		Statement stmt = null;
-
+		
 		// java.sql.ResultSet
 		// - SELECT 조회 결과를 저장하는 객체
 		ResultSet rs = null;
